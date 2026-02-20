@@ -1,0 +1,2 @@
+# OpenCode详细攻略，开源版Claude Code，免费模型与神级插件
+
