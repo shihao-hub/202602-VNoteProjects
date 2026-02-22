@@ -14,10 +14,11 @@
 
 ---
 
-**用户说：** 我需要你把刚刚的提交汉化，并参考 "C:\Users\29580\Desktop\git-commit.md" 这个文件进行提交
+**用户说：** 我需要你把刚刚的提交汉化，并参考 "C:\\Users\\29580\\Desktop\\git-commit.md" 这个文件进行提交
 
 **AI 做：**
-```
+
+```text
 完美！✅ 提交信息已经按照您的规范重新汉化了。
 
 提交格式说明
@@ -52,7 +53,8 @@ chore(git): 初始化 Git 仓库并建立版本控制
 **用户说：** 装备柜的定义在哪个文件里
 
 **AI 做：**
-```
+
+```text
 装备柜（你的装备柜）的定义主要在以下两个文件：
 
 主要文件
@@ -99,10 +101,11 @@ scripts/definitions/mone/containers_ui.lua - 容器 UI 定义（mone_wardrobe �
 
 ---
 
-**用户说：** 阅读这个文件 D:\Users\29580\IdeaProjects\DST-mods\zzz-20260124-scripts\prefabs\wardrobe.lua，这个是最新文件，我发现模组中出现了 bug：现在点击装备柜直接会换皮肤了。对比一下 prefab 文件，思考可能原因
+**用户说：** 阅读这个文件 D:\\Users\\29580\\IdeaProjects\\DST-mods\\zzz-20260124-scripts\\prefabs\\wardrobe.lua，这个是最新文件，我发现模组中出现了 bug：现在点击装备柜直接会换皮肤了。对比一下 prefab 文件，思考可能原因
 
 **AI 做：**
-```
+
+```text
 我找到问题了！让我对比一下关键差异：
 
 🔍 问题分析
@@ -210,7 +213,8 @@ end
 **用户说：** 你去尝试修改一下。记住，从现在开始，你每次变更都必须 git 提交，方便我进行代码回滚。
 
 **AI 做：**
-```
+
+```text
 完成修改！现在让我提交这次变更：
 
 ✅ 修复完成并已提交！
@@ -263,22 +267,36 @@ fix(wardrobe): 修复点击装备柜直接换皮肤的问题
 ## 问题分析总结
 
 ### 问题描述
+
 点击装备柜时直接触发换皮肤界面，而不是打开物品容器。
 
 ### 根本原因
-1. **缺少 wardrobe 标签** - 第143行被注释掉，导致游戏无法正确识别
-2. **组件回调冲突** - wardrobe 组件和 container 组件都设置了 onopenfn/onclosefn
-3. **组件添加顺序不当** - container 组件应该在 wardrobe 组件之前添加
+
+1.  **缺少 wardrobe 标签** - 第143行被注释掉，导致游戏无法正确识别
+    
+2.  **组件回调冲突** - wardrobe 组件和 container 组件都设置了 onopenfn/onclosefn
+    
+3.  **组件添加顺序不当** - container 组件应该在 wardrobe 组件之前添加
+    
 
 ### 解决方案
-1. 恢复 `inst:AddTag("wardrobe")` 标签
-2. 调整组件添加顺序，优先添加 container 组件
-3. 移除 wardrobe 组件的 onopenfn/onclosefn 回调，只保留 onchangeinfn
+
+1.  恢复 `inst:AddTag("wardrobe")` 标签
+    
+2.  调整组件添加顺序，优先添加 container 组件
+    
+3.  移除 wardrobe 组件的 onopenfn/onclosefn 回调，只保留 onchangeinfn
+    
 
 ### 修改文件
-- `scripts/prefabs/mone/game/wardrobe.lua`
+
+-   `scripts/prefabs/mone/game/wardrobe.lua`
+    
 
 ### Git 提交
-- 提交哈希: 18b4d75
-- 提交类型: fix(wardrobe)
-- 提交信息: 修复点击装备柜直接换皮肤的问题
+
+-   提交哈希: 18b4d75
+    
+-   提交类型: fix(wardrobe)
+    
+-   提交信息: 修复点击装备柜直接换皮肤的问题
