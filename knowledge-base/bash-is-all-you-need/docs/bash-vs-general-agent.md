@@ -8,8 +8,8 @@
 
 ### 经典公式 vs Bash 实现
 
-| Agent 架构组件 | Bash Agent 对应实现 | 说明 |
-|---------------|-------------------|------|
+| Agent 架构组件 | Bash Agent 对应实现 | 说明  |
+| --- | --- | --- |
 | **LLM (大脑)** | Claude/GPT 等大语言模型 | 核心推理引擎 |
 | **Planning (规划)** | Chain of Thought + 子目标分解 | 通过提示词实现规划能力 |
 | **Memory (记忆)** | **文件系统**（短期：workspace/，长期：docs/） | 用文件系统实现外部记忆 |
@@ -20,7 +20,7 @@
 
 ## 核心差异分析
 
-### 1. Tools 层的实现方式
+### 1\. Tools 层的实现方式
 
 #### 传统 Agent 框架
 
@@ -86,7 +86,7 @@ agent.call_tool("bash", {"command": "awk '{sum+=$1} END {print sum}' prices.txt"
 
 ---
 
-### 2. Memory 层的实现方式
+### 2\. Memory 层的实现方式
 
 #### 传统 Agent 框架
 
@@ -115,18 +115,18 @@ grep "用户偏好" workspace/*.txt
 
 **对比分析：**
 
-| 维度 | 向量数据库 | 文件系统 |
-|------|-----------|---------|
+| 维度  | 向量数据库 | 文件系统 |
+| --- | --- | --- |
 | **复杂度** | 高（需要数据库服务） | 低（OS 原生支持） |
 | **检索精度** | 语义相似度（模糊） | 精确匹配 |
 | **可扩展性** | 适合海量数据 | 适合中等规模 |
-| **可解释性** | 黑盒 | 透明（可直接查看文件） |
-| **维护成本** | 高 | 低 |
+| **可解释性** | 黑盒  | 透明（可直接查看文件） |
+| **维护成本** | 高   | 低   |
 | **适用场景** | 通用 Agent | 技术型 Agent |
 
 **Bash 方法的优势：**
 
-```
+```text
 1. 可观察性：
    - 可以直接打开文件查看 Agent 的记忆
    - 容易调试和验证
@@ -146,11 +146,11 @@ grep "用户偏好" workspace/*.txt
 
 ---
 
-### 3. Planning 的实现方式
+### 3\. Planning 的实现方式
 
 #### 通用 Agent 架构
 
-```
+```text
 Planning 组件：
 1. 子目标分解（CoT/ToT）
 2. 反思与修正
@@ -164,7 +164,7 @@ Planning 组件：
 
 #### Bash Agent 实现
 
-```
+```text
 Planning 通过提示词实现：
 
 system_prompt = """
@@ -189,18 +189,22 @@ Answer: 这个月有 23 次登录失败
 
 **关键点：**
 
-- Bash Agent 不需要专门的 Planning 模块
-- 通过 **Prompt Engineering** 实现规划能力
-- LLM 本身就具备推理和规划能力
-- 文件系统存储中间结果，便于反思和修正
+-   Bash Agent 不需要专门的 Planning 模块
+    
+-   通过 **Prompt Engineering** 实现规划能力
+    
+-   LLM 本身就具备推理和规划能力
+    
+-   文件系统存储中间结果，便于反思和修正
+    
 
 ---
 
 ## Bash Agent 的独特优势
 
-### 1. 渐进式上下文披露 (Progressive Context Disclosure)
+### 1\. 渐进式上下文披露 (Progressive Context Disclosure)
 
-```
+```text
 传统 Agent：
 启动时加载 50+ 个工具定义 → 占用大量上下文
 
@@ -209,7 +213,7 @@ Bash Agent：
 需要时查询 --help → 按需获取信息
 ```
 
-### 2. 无限的工具组合能力
+### 2\. 无限的工具组合能力
 
 ```bash
 # 示例：分析 CSV 文件中的销售数据，计算每个产品的销售额
@@ -224,7 +228,7 @@ cat sales.csv | \
   awk '{sales[$1]+=$2} END {for(p in sales) print p, sales[p]}'
 ```
 
-### 3. 强大的调试能力
+### 3\. 强大的调试能力
 
 ```bash
 # 每一步都可以查看中间结果
@@ -234,9 +238,9 @@ wc -l errors.txt                        # 统计错误数量
 grep "database" errors.txt > db_errors.txt  # 进一步筛选
 ```
 
-### 4. 文件系统即记忆
+### 4\. 文件系统即记忆
 
-```
+```text
 workspace/
 ├── context/          # 短期记忆（当前任务相关）
 │   ├── task_goal.txt
@@ -253,7 +257,7 @@ workspace/
 
 ### Bash Agent 的局限
 
-```
+```text
 1. 技术门槛：
    - 需要 LLM 理解 Bash 命令
    - 对非技术用户不友好
@@ -310,7 +314,7 @@ tools = [
 
 ### 设计原则
 
-```
+```text
 1. 高频操作 → 预定义工具
    - 减少重复的 --help 查询
    - 提供更友好的接口
@@ -334,7 +338,7 @@ tools = [
 
 ### Bash Agent 在通用架构中的定位
 
-```
+```text
 通用 Agent 架构：
 Agent = LLM + Planning + Memory + Tools
 
@@ -349,8 +353,8 @@ Agent = LLM + (Planning via Prompt) + (Memory via Filesystem) + (Tools via Bash)
 
 ### 适用场景矩阵
 
-| 场景 | 推荐方案 | 原因 |
-|------|---------|------|
+| 场景  | 推荐方案 | 原因  |
+| --- | --- | --- |
 | **技术型任务** | Bash Agent | 丰富的 CLI 工具生态 |
 | **非技术用户** | 传统 Agent | 更友好的界面 |
 | **原型开发** | Bash Agent | 快速迭代，无需预定义 |
@@ -361,15 +365,21 @@ Agent = LLM + (Planning via Prompt) + (Memory via Filesystem) + (Tools via Bash)
 
 > **"Bash Is All You Need" 不是否定其他方案，而是强调通用工具的价值**
 
-- 不需要预定义所有可能的操作
-- 通过组合实现复杂功能
-- 利用现有生态而非重新发明
-- 简单 > 复杂
-- 组合 > 预定义
+-   不需要预定义所有可能的操作
+    
+-   通过组合实现复杂功能
+    
+-   利用现有生态而非重新发明
+    
+-   简单 > 复杂
+    
+-   组合 > 预定义
+    
 
 ---
 
 ## 参考文档
 
-- `bash-is-all-you-need-analysis.md` - Bash 方法的详细分析
-- `llm-agent-architecture.md` - 通用 Agent 架构详解
+-   `bash-is-all-you-need-analysis.md` - Bash 方法的详细分析
+    
+-   `llm-agent-architecture.md` - 通用 Agent 架构详解

@@ -8,7 +8,7 @@
 
 ### 架构层次图
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                        用户层 (User)                         │
 │                    用户输入任务/目标                           │
@@ -40,7 +40,7 @@
 
 ## 核心组件详解
 
-### 1. Agent 主循环 (core/agent.py)
+### 1\. Agent 主循环 (core/agent.py)
 
 **职责**：实现 ReAct (Reason + Act) 模式的执行循环
 
@@ -82,18 +82,26 @@ class BashAgent:
 ```
 
 **关键特性：**
-- **状态管理**：跟踪当前任务状态
-- **错误处理**：失败时重新思考和调整
-- **记忆集成**：自动保存重要信息到文件系统
-- **工具选择**：决定何时查询 --help，何时执行命令
+
+-   **状态管理**：跟踪当前任务状态
+    
+-   **错误处理**：失败时重新思考和调整
+    
+-   **记忆集成**：自动保存重要信息到文件系统
+    
+-   **工具选择**：决定何时查询 --help，何时执行命令
+    
 
 ---
 
-### 2. LLM 引擎集成
+### 2\. LLM 引擎集成
 
 **模型选择**：
-- **推荐**：Claude 3.5 Sonnet (平衡性能和成本)
-- **备选**：GPT-4, Claude Opus (更强大但更贵)
+
+-   **推荐**：Claude 3.5 Sonnet (平衡性能和成本)
+    
+-   **备选**：GPT-4, Claude Opus (更强大但更贵)
+    
 
 **提示词策略**：
 
@@ -124,7 +132,7 @@ SYSTEM_PROMPT = """
 
 ---
 
-### 3. Bash 执行器 (core/bash_executor.py)
+### 3\. Bash 执行器 (core/bash\_executor.py)
 
 **职责**：安全地执行 Bash 命令并返回结果
 
@@ -182,14 +190,19 @@ class BashExecutor:
 ```
 
 **安全特性：**
-- 命令白名单/黑名单
-- 沙箱执行环境（可选）
-- 超时保护
-- 资源限制（CPU, 内存）
+
+-   命令白名单/黑名单
+    
+-   沙箱执行环境（可选）
+    
+-   超时保护
+    
+-   资源限制（CPU, 内存）
+    
 
 ---
 
-### 4. 记忆管理 (core/memory.py)
+### 4\. 记忆管理 (core/memory.py)
 
 **职责**：管理文件系统记忆（短期 + 长期）
 
@@ -260,7 +273,7 @@ class FileSystemMemory:
 
 **目录结构**：
 
-```
+```text
 workspace/
 ├── context/              # 短期记忆（当前任务）
 │   ├── task_goal.txt     # 任务目标
@@ -275,7 +288,7 @@ workspace/
 
 ---
 
-### 5. 工具发现 (core/tools.py)
+### 5\. 工具发现 (core/tools.py)
 
 **职责**：渐进式上下文披露，按需查询工具信息
 
@@ -349,7 +362,7 @@ class ToolDiscovery:
 
 ### 任务执行流程
 
-```
+```text
 用户输入："计算 CSV 文件中每列的平均值"
     │
     ▼
@@ -446,7 +459,7 @@ tools:
 
 ## 安全设计
 
-### 1. 命令安全
+### 1\. 命令安全
 
 ```python
 class SecurityChecker:
@@ -474,7 +487,7 @@ class SecurityChecker:
         return True
 ```
 
-### 2. 资源限制
+### 2\. 资源限制
 
 ```python
 # 限制执行时间和资源
@@ -490,7 +503,7 @@ def execute_with_limits(command: str):
     # ... 执行命令
 ```
 
-### 3. 沙箱环境（可选）
+### 3\. 沙箱环境（可选）
 
 ```bash
 # 使用 Docker 或 firejail 沙箱
@@ -504,7 +517,7 @@ firejail --private --whitelist=workspace bash -c "command"
 
 ## 扩展性设计
 
-### 1. 插件系统（可选）
+### 1\. 插件系统（可选）
 
 ```python
 class Plugin:
@@ -520,7 +533,7 @@ class LoggingPlugin(Plugin):
         logger.info(f"命令结果: {result.success}")
 ```
 
-### 2. 自定义工具
+### 2\. 自定义工具
 
 ```python
 class CustomTool:
@@ -541,7 +554,7 @@ agent.register_tool("process_csv", CustomTool.process_csv)
 
 ## 性能优化
 
-### 1. 帮助文档缓存
+### 1\. 帮助文档缓存
 
 ```python
 class HelpCache:
@@ -558,7 +571,7 @@ class HelpCache:
         self.save_cache()
 ```
 
-### 2. 并行执行
+### 2\. 并行执行
 
 ```python
 async def execute_parallel(commands: List[str]) -> List[ExecutionResult]:
@@ -567,7 +580,7 @@ async def execute_parallel(commands: List[str]) -> List[ExecutionResult]:
     return await asyncio.gather(*tasks)
 ```
 
-### 3. 结果流式传输
+### 3\. 结果流式传输
 
 ```python
 def execute_stream(command: str):
@@ -588,7 +601,7 @@ def execute_stream(command: str):
 
 ## 测试策略
 
-### 1. 单元测试
+### 1\. 单元测试
 
 ```python
 def test_bash_executor():
@@ -603,7 +616,7 @@ def test_memory_store():
     assert memory.retrieve("test") == "content"
 ```
 
-### 2. 集成测试
+### 2\. 集成测试
 
 ```python
 def test_agent_workflow():
@@ -613,7 +626,7 @@ def test_agent_workflow():
     assert agent.memory.exists("result")
 ```
 
-### 3. 安全测试
+### 3\. 安全测试
 
 ```python
 def test_security_checker():
@@ -626,6 +639,8 @@ def test_security_checker():
 
 ## 参考文档
 
-- `bash-vs-general-agent.md` - Bash Agent 在通用架构中的定位
-- `usage-guide.md` - 使用指南
-- `llm-agent-architecture.md` - 通用 Agent 架构理论
+-   `bash-vs-general-agent.md` - Bash Agent 在通用架构中的定位
+    
+-   `usage-guide.md` - 使用指南
+    
+-   `llm-agent-architecture.md` - 通用 Agent 架构理论

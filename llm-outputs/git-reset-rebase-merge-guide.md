@@ -4,11 +4,16 @@
 
 ## 目录
 
-- [Git 三个区域](#git-三个区域)
-- [Git Reset](#git-reset)
-- [Git Rebase vs Merge](#git-rebase-vs-merge)
-- [合并多个提交](#合并多个提交)
-- [最佳实践](#最佳实践)
+-   [Git 三个区域](#git-%E4%B8%89%E4%B8%AA%E5%8C%BA%E5%9F%9F)
+    
+-   [Git Reset](#git-reset)
+    
+-   [Git Rebase vs Merge](#git-rebase-vs-merge)
+    
+-   [合并多个提交](#%E5%90%88%E5%B9%B6%E5%A4%9A%E4%B8%AA%E6%8F%90%E4%BA%A4)
+    
+-   [最佳实践](#%E6%9C%80%E4%BD%B3%E5%AE%9E%E8%B7%B5)
+    
 
 ---
 
@@ -16,13 +21,16 @@
 
 理解 Git 的三个区域是掌握 Reset、Rebase、Merge 的基础：
 
-```
+```text
 工作区 →(add)→ 暂存区 →(commit)→ 本地仓库
 ```
 
-1. **工作区** (Working Directory) - 你实际看到的文件
-2. **暂存区** (Staging Area/Index) - `git add` 后的文件
-3. **本地仓库** (Local Repository) - `git commit` 后的提交
+1.  **工作区** (Working Directory) - 你实际看到的文件
+    
+2.  **暂存区** (Staging Area/Index) - `git add` 后的文件
+    
+3.  **本地仓库** (Local Repository) - `git commit` 后的提交
+    
 
 ---
 
@@ -32,13 +40,13 @@
 
 ### 三种模式对比
 
-| 模式 | 撤销 commit | 撤销 add | 保留代码改动 | 安全性 |
-|------|------------|----------|-------------|--------|
-| `--soft` | ✅ | ❌ | ✅ 暂存区 | 安全 |
-| `--mixed` (默认) | ✅ | ✅ | ✅ 工作区 | 安全 |
-| `--hard` | ✅ | ✅ | ❌ 全部丢失 | 危险 |
+| 模式  | 撤销 commit | 撤销 add | 保留代码改动 | 安全性 |
+| --- | --- | --- | --- | --- |
+| `--soft` | ✅   | ❌   | ✅ 暂存区 | 安全  |
+| `--mixed` (默认) | ✅   | ✅   | ✅ 工作区 | 安全  |
+| `--hard` | ✅   | ✅   | ❌ 全部丢失 | 危险  |
 
-### 1. `git reset --soft` （最温和）
+### 1\. `git reset --soft` （最温和）
 
 只撤销提交，**保留**所有更改在暂存区
 
@@ -46,9 +54,12 @@
 git reset --soft HEAD~1  # 撤销最近 1 次提交
 ```
 
-- C 提交被撤销
-- **代码改动保留在暂存区**（绿色，已 staged）
-- 相当于"撤销 commit，但不撤销 add"
+-   C 提交被撤销
+    
+-   **代码改动保留在暂存区**（绿色，已 staged）
+    
+-   相当于"撤销 commit，但不撤销 add"
+    
 
 **使用场景**：提交信息写错了，想重新提交
 
@@ -57,7 +68,7 @@ git reset --soft HEAD~1
 git commit -m "正确的提交信息"
 ```
 
-### 2. `git reset --mixed` 或 `git reset` （默认）
+### 2\. `git reset --mixed` 或 `git reset` （默认）
 
 撤销提交，并**从暂存区移除**，但保留文件内容
 
@@ -65,13 +76,16 @@ git commit -m "正确的提交信息"
 git reset HEAD~1  # 默认是 --mixed
 ```
 
-- C 提交被撤销
-- **代码改动保留在工作区**（红色，未 staged）
-- 需要重新 `git add`
+-   C 提交被撤销
+    
+-   **代码改动保留在工作区**（红色，未 staged）
+    
+-   需要重新 `git add`
+    
 
 **使用场景**：想重新整理要提交的内容
 
-### 3. `git reset --hard` （最危险）
+### 3\. `git reset --hard` （最危险）
 
 **彻底删除**所有更改！
 
@@ -79,9 +93,12 @@ git reset HEAD~1  # 默认是 --mixed
 git reset --hard HEAD~1
 ```
 
-- C 提交被撤销
-- **所有代码改动都丢失**
-- 回到 B 的状态，像 C 从未存在过
+-   C 提交被撤销
+    
+-   **所有代码改动都丢失**
+    
+-   回到 B 的状态，像 C 从未存在过
+    
 
 ⚠️ **使用前要确认！改动的代码会永久丢失！**
 
@@ -105,13 +122,16 @@ git reset --soft abc123f  # 所有更改都在暂存区
 
 ### 核心区别
 
-- **Merge（合并）**：保留完整的提交历史
-- **Rebase（变基）**：重写提交历史，使线性更清晰
+-   **Merge（合并）**：保留完整的提交历史
+    
+-   **Rebase（变基）**：重写提交历史，使线性更清晰
+    
 
 ### 图解说明
 
 假设有这样的分支结构：
-```
+
+```text
 A --- B --- C (main)
       \
        D --- E (feature)
@@ -125,15 +145,19 @@ git merge feature
 ```
 
 结果：
-```
+
+```text
 A --- B --- C -------- M (main)
       \              /
        D --- E (feature)
 ```
 
-- 创建了一个**新的合并提交 M**
-- 保留了真实的开发历史
-- 分支图有分叉
+-   创建了一个**新的合并提交 M**
+    
+-   保留了真实的开发历史
+    
+-   分支图有分叉
+    
 
 #### 使用 Rebase
 
@@ -143,18 +167,22 @@ git rebase main
 ```
 
 结果：
-```
+
+```text
 A --- B --- C --- D' --- E' (main)
 ```
 
-- 把 D 和 E 的提交**复制**一份，依次应用到 C 之后
-- 历史变成**线性**的
-- 看起来像是在 main 上直接开发的
+-   把 D 和 E 的提交**复制**一份，依次应用到 C 之后
+    
+-   历史变成**线性**的
+    
+-   看起来像是在 main 上直接开发的
+    
 
 ### 优缺点对比
 
-| | Merge | Rebase |
-|---|---|---|
+|     | Merge | Rebase |
+| --- | --- | --- |
 | **历史真实性** | ✅ 保留真实历史 | ❌ 重写历史 |
 | **历史清晰度** | ❌ 有分叉，复杂 | ✅ 线性，清晰 |
 | **安全性** | ✅ 不会丢失提交 | ⚠️ 可能冲突复杂 |
@@ -163,14 +191,22 @@ A --- B --- C --- D' --- E' (main)
 ### 使用建议
 
 **用 Merge**：
-- ✅ 公共分支（如 main/master）
-- ✅ 需要保留完整的开发历史
-- ✅ 团队协作时
+
+-   ✅ 公共分支（如 main/master）
+    
+-   ✅ 需要保留完整的开发历史
+    
+-   ✅ 团队协作时
+    
 
 **用 Rebase**：
-- ✅ 个人功能分支
-- ✅ 准备合并前清理历史
-- ✅ 想要线性历史
+
+-   ✅ 个人功能分支
+    
+-   ✅ 准备合并前清理历史
+    
+-   ✅ 想要线性历史
+    
 
 ### ⚠️ 重要警告
 
@@ -199,14 +235,19 @@ git commit -m "合并后的提交信息"
 ```
 
 **原理**：
-- `HEAD~10` 表示倒数第 10 个提交
-- `--soft` 只撤销提交，不改代码，所有更改都在暂存区
-- 最后重新 commit，就把所有改动打包成一个了
+
+-   `HEAD~10` 表示倒数第 10 个提交
+    
+-   `--soft` 只撤销提交，不改代码，所有更改都在暂存区
+    
+-   最后重新 commit，就把所有改动打包成一个了
+    
 
 **实际例子**：
 
 假设你有这样的提交历史：
-```
+
+```text
 abc1234 (HEAD) feat: 添加功能C
 def5678 feat: 添加功能B
 ghi9012 feat: 添加功能A
@@ -220,7 +261,8 @@ git commit -m "feat: 添加完整功能模块"
 ```
 
 结果：
-```
+
+```text
 xyz7890 (HEAD) feat: 添加完整功能模块
 ```
 
@@ -252,15 +294,19 @@ squash jkl3456 第10个提交
 ```
 
 **rebase 的优点**：
-- 可以选择性地合并某些提交
-- 可以重新排序提交
-- 可以修改提交信息
+
+-   可以选择性地合并某些提交
+    
+-   可以重新排序提交
+    
+-   可以修改提交信息
+    
 
 ---
 
 ## 最佳实践
 
-### 1. 执行前先检查
+### 1\. 执行前先检查
 
 ```bash
 # 查看最近的提交
@@ -273,7 +319,7 @@ git log -10
 git log --graph --oneline --all
 ```
 
-### 2. 安全第一
+### 2\. 安全第一
 
 ```bash
 # 在执行危险操作前，先创建备份分支
@@ -283,13 +329,16 @@ git branch backup-branch
 git reset --hard backup-branch
 ```
 
-### 3. 已推送的提交
+### 3\. 已推送的提交
 
-- ❌ 不要使用 `reset --hard` + `push --force`
-- ✅ 使用 `git revert` 来撤销
-- ✅ 或者在团队协商后谨慎使用 force push
+-   ❌ 不要使用 `reset --hard` + `push --force`
+    
+-   ✅ 使用 `git revert` 来撤销
+    
+-   ✅ 或者在团队协商后谨慎使用 force push
+    
 
-### 4. 工作流程建议
+### 4\. 工作流程建议
 
 ```bash
 # 开发新功能时
@@ -346,12 +395,15 @@ git checkout -- 文件名     # 撤销工作区文件的更改
 
 ## 相关资源
 
-- [Git 官方文档 - git-reset](https://git-scm.com/docs/git-reset)
-- [Git 官方文档 - git-rebase](https://git-scm.com/docs/git-rebase)
-- [Git 官方文档 - git-merge](https://git-scm.com/docs/git-merge)
-- [Atlassian Git Tutorial](https://www.atlassian.com/git/tutorials)
+-   [Git 官方文档 - git-reset](https://git-scm.com/docs/git-reset)
+    
+-   [Git 官方文档 - git-rebase](https://git-scm.com/docs/git-rebase)
+    
+-   [Git 官方文档 - git-merge](https://git-scm.com/docs/git-merge)
+    
+-   [Atlassian Git Tutorial](https://www.atlassian.com/git/tutorials)
+    
 
 ---
 
-**文档创建时间**：2026-02-07
-**最后更新**：2026-02-07
+**文档创建时间**：2026-02-07 **最后更新**：2026-02-07
