@@ -36,7 +36,6 @@ Claude Code 会分析当前文件夹，把它学到的关于项目的知识都�
 
 进入记忆模式，接下来我们输入的话都会被 Claude Code 作为文件的形式记录下来，变成 AI 的长期记忆。
 
-
 ### `~/.claude/CLAUDE.md（区别于 ./claude/CLAUDE.md 和 ./CLAUDE.md）`
 
 用户级别的记忆，对所有的项目都生效，比如：
@@ -49,13 +48,14 @@ Claude Code 会分析当前文件夹，把它学到的关于项目的知识都�
 
 ide 集成，不过 ide 中需要安装 Claude Code 插件，这样就可以把 Claude Code 和 ide 打通了。
 
-1. 在 ide 中选中的代码，Claude Code 这边都能感知到！（实践发现需要 ide 的处于打开状态且工作目录和 Claude Code 目录一致）
-2. Claude Code 代码修改时，ide 中也会出来页面对比，然后再 Claude Code 中选择是否接受
+1.  在 ide 中选中的代码，Claude Code 这边都能感知到！（实践发现需要 ide 的处于打开状态且工作目录和 Claude Code 目录一致）
+    
+2.  Claude Code 代码修改时，ide 中也会出来页面对比，然后再 Claude Code 中选择是否接受
+    
 
 ### `claude -p {prompt}`
 
 非交互模式，开启临时的一次性对话（后台执行，结束响应）
-
 
 ## 把 MCP 安装到 Claude Code 中
 
@@ -85,11 +85,9 @@ context7 可以针对性查找最新代码文档，所以有了它的帮助，�
 
 prompt 举例：`把当前目录的项目改造成 tailwind v4（使用 context7）`
 
-
 ### 删除 MCP
 
 退出 Claude Code，执行 `claude mcp remove {name}` 即可
-
 
 ### 远程调用 MCP
 
@@ -121,7 +119,7 @@ prompt: `我在 neon 上有哪些表`
 
 可以自定义一些规则，Allow | Deny | Workspace 等，
 
-比如将 Bash(git commit: *) | mcp__neon 规则添加进 Allow，Claude Code 调用时就不需要征求人的同意。
+比如将 Bash(git commit: \*) | mcp\_\_neon 规则添加进 Allow，Claude Code 调用时就不需要征求人的同意。
 
 ### `claude --dangerously-skip-permissions`
 
@@ -131,10 +129,9 @@ prompt: `我在 neon 上有哪些表`
 
 Claude Code 的斜线命令除了内置的外，我们还可以定义自己的命令：
 
-打开项目目录，找到 .claude 目录，新建 commands 目录，在这里面就可以以文件的形式来自定义命令了，
-文件的名字就是命令的名字，举个例子：
+打开项目目录，找到 .claude 目录，新建 commands 目录，在这里面就可以以文件的形式来自定义命令了， 文件的名字就是命令的名字，举个例子：
 
-code_review.md（自然语言编写内容即可）
+code\_review.md（自然语言编写内容即可）
 
 ```markdown
 对比这个分支：$ARGUMENTS，与 main 分支的差异，并且提出你的 review 意见。
@@ -158,8 +155,7 @@ code_review.md（自然语言编写内容即可）
 
 让 Claude Code 在工作过程中的某个特定节点，执行某些特定操作。
 
-比如：写代码时用户经常执行 `npx prettier --check .` 命令去检查当面目录下面的代码格式是否正确，
-那么现在我想要 AI 在写完代码后也执行这个命令应该这样做：
+比如：写代码时用户经常执行 `npx prettier --check .` 命令去检查当面目录下面的代码格式是否正确， 那么现在我想要 AI 在写完代码后也执行这个命令应该这样做：
 
 打开 .claude 目录，新建 settings.json/settings.local.json 文件（local 优先级更高）：
 
@@ -183,7 +179,6 @@ code_review.md（自然语言编写内容即可）
 
 当工具调用完成后（PostToolUse），执行 command
 
-
 ### 更多 Hook Events
 
 Claude Code 官方文档中还列举了很多的触发事件！
@@ -191,7 +186,6 @@ Claude Code 官方文档中还列举了很多的触发事件！
 可以参考官方文档，配置更多 hook 来辅助开发工作
 
 > 显然，这自然更适合插件开发
-
 
 ## Sub Agent
 
@@ -209,18 +203,15 @@ Claude Code 官方文档中还列举了很多的触发事件！
 
 直接使用自然语言填上这个 agent 的描述即可（1. 可以执行什么样的任务 2. 希望达成一个什么样的结果）
 
-
 举例（多个）：
 
 `你是代码审核大师，请帮我比较 git 分支之间的代码差异，提出审核意见`
 
 `你是一个天气预报大师，你用联网工具查询天气`
 
-
 再下一步选择赋予这个 Sub Agent 什么样的工具权限（可以跳过）
 
 至此，Sub Agent 创建完成！
-
 
 #### 使用 Sub Agent
 
@@ -232,15 +223,16 @@ Claude Code 官方文档中还列举了很多的触发事件！
 
 `/plan`
 
-这 /plan该命令将 Claude Code 置于 计划模式，指示 Claude 使用只读操作分析您的代码库，
-并在进行更改之前创建计划。这非常适合以下情况： 
+这 /plan该命令将 Claude Code 置于 计划模式，指示 Claude 使用只读操作分析您的代码库， 并在进行更改之前创建计划。这非常适合以下情况：
 
-- 探索不熟悉的代码库
-- 安全地规划复杂的变革
-- 审查代码而无需担心被修改
+-   探索不熟悉的代码库
+    
+-   安全地规划复杂的变革
+    
+-   审查代码而无需担心被修改
+    
 
-在计划模式下，克劳德会分析并提出计划，然后您可以退出计划模式开始实施更改。
-您可以使用 ExitPlanMode提示 Claude 开始编写代码的工具。
+在计划模式下，克劳德会分析并提出计划，然后您可以退出计划模式开始实施更改。 您可以使用 ExitPlanMode提示 Claude 开始编写代码的工具。
 
 更多详情请参见[“常用工作流程”](https://code.claude.com/docs/en/common-workflows)页面。
 
@@ -252,7 +244,7 @@ Claude Code 官方文档中还列举了很多的触发事件！
 
 > 英文文档终究拗口，即使翻译也拗口，这种情况建议继续搜索相关教学视频...
 
-## GitHub 集成 
+## GitHub 集成
 
 GitHub CLI 命令行工具（github 搜 cli）：
 
@@ -290,8 +282,6 @@ github 上有个开源工具 ccundo，但是可能是 nodejs 版本问题，我�
 
 这样我们可以持久化，也可以发送给其他 AI 进行交叉验证。
 
-
-
 ### QA
 
 导出的对话内容，可以给另一台电脑的 Claude Code 导入吗？等价于同步功能...
@@ -311,4 +301,3 @@ github 上有个开源工具 ccundo，但是可能是 nodejs 版本问题，我�
 更多使用案例可以参考官方文档，文档也提供了简体中文版。
 
 这个视频的内容几乎涵盖了 Claude Code 的大部分功能了。
-

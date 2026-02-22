@@ -6,7 +6,7 @@
 
 ## 核心问题
 
-```
+```text
 http.cookiejar.CookieJar.extract_cookies(response, request)
                     │
                     │ 期望接收标准库 urllib2.Request 的接口
@@ -111,7 +111,7 @@ def extract_cookies_to_jar(jar, request, response):
 
 ## 完整流程图
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────────┐
 │                      HTTP Response                              │
 │                Set-Cookie: session=abc123                       │
@@ -147,17 +147,17 @@ def extract_cookies_to_jar(jar, request, response):
 
 这里用 "Mock" 这个名字其实容易引起误解。更准确的叫法应该是 **Adapter（适配器）** 或 **Wrapper（包装器）**：
 
-| 特征 | Mock 对象 | 适配器 |
-|------|-----------|--------|
-| 目的 | 隔离依赖进行测试 | 连接不兼容的接口 |
-| 实现 | 通常返回假数据 | 转换调用真实对象 |
+| 特征  | Mock 对象 | 适配器 |
+| --- | --- | --- |
+| 目的  | 隔离依赖进行测试 | 连接不兼容的接口 |
+| 实现  | 通常返回假数据 | 转换调用真实对象 |
 | 使用场景 | 单元测试 | 生产代码 |
 
 `MockRequest/MockResponse` 虽然名字叫 Mock，但本质是 **Adapter**，用于连接新旧接口。
 
 ## 适配器模式图示
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────┐
 │                    旧代码期望的接口                            │
 │           (http.cookiejar，期望 urllib2.Request)              │
@@ -181,7 +181,7 @@ def extract_cookies_to_jar(jar, request, response):
 ## 接口对照表
 
 | urllib2.Request 期望 | MockRequest 实现 | 数据来源 |
-|---------------------|------------------|----------|
+| --- | --- | --- |
 | `get_type()` | `return self.type` | `urlparse(request.url).scheme` |
 | `get_host()` | `return urlparse(self._r.url).netloc` | `request.url` |
 | `get_full_url()` | 返回完整 URL（处理 Host 头） | `request.url` + `request.headers` |
@@ -190,8 +190,8 @@ def extract_cookies_to_jar(jar, request, response):
 
 ## 总结
 
-| 问题 | 答案 |
-|------|------|
+| 问题  | 答案  |
+| --- | --- |
 | 为什么要适配？ | `requests.Request` 不符合标准库 `cookiejar` 期望的接口 |
 | 用了什么模式？ | **适配器模式**（Adapter Pattern） |
 | 为什么叫 Mock？ | 历史命名习惯，本质是 Adapter/Wrapper |
@@ -201,7 +201,10 @@ def extract_cookies_to_jar(jar, request, response):
 
 ## 参考源码
 
-- `requests/cookies.py:23-101` - MockRequest 类
-- `requests/cookies.py:103-120+` - MockResponse 类
-- `requests/cookies.py:124-137` - extract_cookies_to_jar 函数
-- `requests/sessions.py:718-725` - Cookie 持久化调用
+-   `requests/cookies.py:23-101` - MockRequest 类
+    
+-   `requests/cookies.py:103-120+` - MockResponse 类
+    
+-   `requests/cookies.py:124-137` - extract\_cookies\_to\_jar 函数
+    
+-   `requests/sessions.py:718-725` - Cookie 持久化调用
