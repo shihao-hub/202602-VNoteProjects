@@ -28,4 +28,4 @@ logging.basicConfig(handlers=[InterceptHandler()], level=0)
 
 这样，即使你继续用 `logging.error(..., exc_info=True)`，底层也会由 `loguru` 输出！
 
-> ✅ 优点：无需修改任何 `logging` 调用，日志统一由 `loguru` 管理。<br>🔗 官方文档：[https://loguru.readthedocs.io/en/stable/overview.html#entirely-compatible-with-standard-logging](https://loguru.readthedocs.io/en/stable/overview.html#entirely-compatible-with-standard-logging)
+> ✅ 优点：无需修改任何 `logging` 调用，日志统一由 `loguru` 管理。<br>🔗 官方文档：[https://loguru.readthedocs.io/en/stable/overview.html#entirely-compatible-with-standard-loggin](https://loguru.readthedocs.io/en/stable/overview.html#entirely-compatible-with-standard-logging)
