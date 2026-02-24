@@ -1,13 +1,14 @@
 # Cherry Studio 数据存储分析
 
 ## 分析日期
+
 2026-02-24
 
 ## 目录结构概览
 
 CherryStudio 的数据存储位于 `C:\Users\29580\AppData\Roaming\CherryStudio\`
 
-```
+```text
 CherryStudio/
 ├── .claude/                    # Claude Code 配置
 ├── blob_storage/              # Blob 存储
@@ -33,30 +34,44 @@ CherryStudio/
 
 ## 核心数据存储位置分析
 
-### 1. Local Storage (leveldb) - 助手库主要存储
+### 1\. Local Storage (leveldb) - 助手库主要存储
 
 **路径**: `Local Storage/leveldb/`
 
 **文件列表**:
-- `000005.ldb` (158KB)
-- `001436.ldb` (158KB)
-- `001438.ldb` (178KB)
-- `001440.ldb` (178KB) - 最新
+
+-   `000005.ldb` (158KB)
+    
+-   `001436.ldb` (158KB)
+    
+-   `001438.ldb` (178KB)
+    
+-   `001440.ldb` (178KB) - 最新
+    
 
 **内容分析**:
-- 存储格式: LevelDB 键值对存储
-- 发现数据片段: `{"assistants":"{\"defaultA>`
-- 包含: `persist:cherry-studio` 命名空间
-- **这是自定义助手配置最可能的存储位置**
+
+-   存储格式: LevelDB 键值对存储
+    
+-   发现数据片段: `{"assistants":"{\"defaultA>`
+    
+-   包含: `persist:cherry-studio` 命名空间
+    
+-   **这是自定义助手配置最可能的存储位置**
+    
 
 **键类型发现**:
-- `assistants` - 助手列表/配置
-- `assistant` - 单个助手数据
-- `agentSessionId_` - 助手会话ID
+
+-   `assistants` - 助手列表/配置
+    
+-   `assistant` - 单个助手数据
+    
+-   `agentSessionId_` - 助手会话ID
+    
 
 ---
 
-### 2. Data/agents.db - SQLite 助手数据库
+### 2\. Data/agents.db - SQLite 助手数据库
 
 **路径**: `Data/agents.db`
 
@@ -108,25 +123,29 @@ CREATE TABLE session_messages (
 
 ---
 
-### 3. IndexedDB - 结构化数据存储
+### 3\. IndexedDB - 结构化数据存储
 
 **路径**: `IndexedDB/file__0.indexeddb.leveldb/`
 
 **文件**:
-- `000402.ldb` (1.5MB)
-- `000400.log` (951KB)
+
+-   `000402.ldb` (1.5MB)
+    
+-   `000400.log` (951KB)
+    
 
 **内容**: 可能存储会话数据、消息历史
 
 ---
 
-### 4. Data/KnowledgeBase - 知识库向量数据库
+### 4\. Data/KnowledgeBase - 知识库向量数据库
 
 **路径**: `Data/KnowledgeBase/l0ttBeEDPGs_LeqjwpOK9`
 
 **格式**: SQLite 3.x 数据库
 
 **结构**:
+
 ```sql
 CREATE TABLE vectors (
     id TEXT PRIMARY KEY,
@@ -142,12 +161,14 @@ CREATE TABLE vectors (
 
 ---
 
-### 5. Data/Files/ - 文件存储
+### 5\. Data/Files/ - 文件存储
 
 **路径**: `Data/Files/`
 
 **文件**:
-- `custom-minapps.json` - 当前为空数组 `[]`
+
+-   `custom-minapps.json` - 当前为空数组 `[]`
+    
 
 **用途**: 可能用于存储自定义迷你应用配置
 
@@ -158,10 +179,15 @@ CREATE TABLE vectors (
 ### Partitions/webview/
 
 WebView 进程的独立存储空间，包含：
-- `Local Storage/leveldb/`
-- `IndexedDB/`
-- `Session Storage/`
-- `DIPS` - SQLite 数据库（被锁定）
+
+-   `Local Storage/leveldb/`
+    
+-   `IndexedDB/`
+    
+-   `Session Storage/`
+    
+-   `DIPS` - SQLite 数据库（被锁定）
+    
 
 ### Session Storage/
 
@@ -208,8 +234,10 @@ strings "Local Storage/leveldb/"*.ldb | grep -i assistant
 
 ### 方法 4: 应用内导出
 
-- 使用 Cherry Studio 内置的导出/备份功能
-- 检查设置中的助手管理选项
+-   使用 Cherry Studio 内置的导出/备份功能
+    
+-   检查设置中的助手管理选项
+    
 
 ---
 
@@ -234,20 +262,24 @@ strings "Local Storage/leveldb/"*.ldb | grep -i assistant
 
 ### 查找名为"文件夹命名"的自定义助手
 
-1. **LevelDB 搜索**:
-   ```bash
-   grep -ra "文件夹命名" "Local Storage/leveldb/"
-   ```
-
-2. **数据库查询** (应用关闭后):
-   ```bash
-   sqlite3 Data/agents.db "SELECT * FROM agents WHERE name LIKE '%文件夹%';"
-   ```
-
-3. **十六进制查看**:
-   ```bash
-   hexdump -C "Local Storage/leveldb/"*.ldb | grep -i "文件夹"
-   ```
+1.  **LevelDB 搜索**:
+    
+    ```bash
+    grep -ra "文件夹命名" "Local Storage/leveldb/"
+    ```
+    
+2.  **数据库查询** (应用关闭后):
+    
+    ```bash
+    sqlite3 Data/agents.db "SELECT * FROM agents WHERE name LIKE '%文件夹%';"
+    ```
+    
+3.  **十六进制查看**:
+    
+    ```bash
+    hexdump -C "Local Storage/leveldb/"*.ldb | grep -i "文件夹"
+    ```
+    
 
 ---
 
@@ -277,8 +309,8 @@ strings "Local Storage/leveldb/"*.ldb | grep -i assistant
 
 ## 总结
 
-| 存储位置 | 用途 | 状态 |
-|---------|------|------|
+| 存储位置 | 用途  | 状态  |
+| --- | --- | --- |
 | `Local Storage/leveldb/` | 助手配置 | ⭐ 主要位置 |
 | `Data/agents.db` | 会话/消息 | 空数据库 |
 | `IndexedDB/` | 结构化数据 | 活跃使用 |
@@ -289,8 +321,12 @@ strings "Local Storage/leveldb/"*.ldb | grep -i assistant
 
 ## 后续分析建议
 
-1. 在 Cherry Studio 关闭状态下重新分析数据库
-2. 使用专门的 LevelDB 查看工具
-3. 检查是否有备份文件
-4. 查看应用源代码了解数据结构
-5. 尝试创建新的助手并观察数据变化
+1.  在 Cherry Studio 关闭状态下重新分析数据库
+    
+2.  使用专门的 LevelDB 查看工具
+    
+3.  检查是否有备份文件
+    
+4.  查看应用源代码了解数据结构
+    
+5.  尝试创建新的助手并观察数据变化
